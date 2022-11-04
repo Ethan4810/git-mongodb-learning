@@ -1,0 +1,29 @@
+// USER DATABASE //
+
+/* DATABASE SETUP */
+// 현재 db변수에 할당된 MongoDB의 데이터베이스 이름 보기
+show dbs
+
+// 사용할 데이터베이스 선택
+use userdb
+
+
+/* INSERT CLAUSES */
+// userdb에 document를 추가
+db.users.insert({ 
+  "username": "velopert",
+  "name": { "first": "M.J.", "last": "K."},
+  "language": ["korean", "english", "chinese"]
+})
+
+
+/* FIND CLAUSES */
+// users의 모든 document를 검색
+db.users.find().pretty()
+
+// "name" field의 first의 값이 "M.J."인 document 검색
+db.users.find({ "name.first" : "M.J."}).pretty()
+
+// "language" field의 값의 배열 요소 중 "korean"인 document 검색
+db.users.find({ "language" : "korean"}).pretty()
+

@@ -1,0 +1,47 @@
+// MOVIE DATABASE //
+
+/* DATABASE SETUP */
+// 현재 db변수에 할당된 MongoDB의 데이터베이스 이름 보기
+show dbs 
+
+// 사용할 데이터베이스 선택
+use moviedb 
+
+
+/* INSERT CLAUSES */
+// document를 나타내는 자바스크립트 객체인 지역 변수(e.g., movie) 생성
+movie = {"title" : "Star Wars: Episode IV - A New Hope", "director" : "George Lucas", "year" : 1977} 
+
+// 생성한 지역 변수(e.g., movie)를 이용하여 데이터 삽입
+db.movies.insertOne(movie)
+db.movies.insert(movie)
+
+// 여러 건의 데이터 삽입
+db.movies.insertMany([ {"title" : "Ghostbusters"}, {"title" : "E.T."}, {"title" : "Blade Runner"}])
+
+
+/* UPDATE CLAUSES */
+// document에 새 key 값으로 reviews 배열을 추가
+db.movies.updateOne({"title" : "Star Wars: Episode IV - A New Hope"}, {$set : reviews: []}})
+
+
+/* DELETE CLAUSES */
+// 필터와 일치하는 document 하나를 삭제
+db.movies.deleteOne({"title" : "Star Wars: Episode IV - A New Hope"} 
+
+// 필터와 일치하는 모든 document를 삭제
+db.movies.deleteMany({"title" : "Star Wars: Episode IV - A New Hope"} 
+
+// 기존 collection에 있는 모든 document 삭제 시 사용
+db.movies.drop() 
+
+
+/* FIND CLAUSES */
+// 일치하는 document를 자동으로 20개까지 출력할 때 사용
+db.movies.find()
+
+// 좀 더 예쁘게 출력
+db.movies.find().pretty()
+
+// 일치하는 하나의 document를 출력할 때 사용
+db.movies.findOne().pretty()

@@ -1,0 +1,154 @@
+// LIBRARY DATABASE //
+
+/* DATABASE SETUP */
+// 현재 db변수에 할당된 MongoDB의 데이터베이스 이름 보기
+show dbs
+
+// 사용할 데이터베이스 선택
+use Library db
+
+
+/* INSERT CLAUSES */
+// 1. 'mongdb_과제.txt' 파일의 내용을 복사하여 각 collection에 data를 삽입
+// Library에 "Publishers" collection의 document를 추가
+db.Publishers.drop() 
+db.Publishers.insertMany([
+    { "_id" : "124521", 
+  "pub_name" : "한빛미디어",
+  "pub_address" : "서울시 서대문구 연희로"
+  },
+  { "_id" : 124522, 
+  "pub_name" : "성안당", 
+  "pub_address" : "서울시 마포구 양화로"
+  },
+  { "_id" : 124523, 
+  "pub_name" : "에이콘", 
+  "pub_address" : "서울시 양천구 국회대로" 
+  }
+])
+
+// Library에 "Members" collection의 document를 추가
+db.Members.drop() 
+db.Members.insertMany([
+  { "_id" : 324521, 
+  "memb_name" : "홍길동", 
+  "memb_type" : "보통", 
+  "address" : "경기도 성남시 이매동" }, 
+{ "_id" : 324522, 
+  "memb_name" : "김가천", 
+  "memb_type" : "모범", 
+  "address" : "경기도 하남시 학암동" },
+{ "_id" : 324523, 
+  "memb_name" : "전지현", 
+  "memb_type" : "모범", 
+  "address" : "서울시 여의도동" }
+])
+
+// Library에 "Books" collection의 document를 추가
+// 대여 가능 상태일 경우, "available" : 1,
+// 대여 불가능 상태일 경우, "available" : 0,
+// returndate 필드가 존재하지 않으면 대여중인 상태
+db.Books.drop() 
+db.Books.insertMany([
+  { "_id" : 27461, 
+  "author" : "크리스티나 초도로", 
+  "title" : "MongoDB 완벽 가이드", 
+  "price" : 36000, 
+  "pub_id" : 124512, 
+  "pub_name" : "한빛미디어", 
+  "available" : 1 },
+{ "_id" : 27462, 
+  "author" : "제프리 에이븐", 
+  "title" : "파이썬 활용한 스파크 프로그래밍", 
+  "price" : 30000, 
+  "pub_id" : 124514, 
+  "pub_name" : "에이콘", 
+  "available" : 0, 
+  "lended" : { "memb_id" : 324523, "memb_name" : "전지현", "issuedate" : "2021-09-02", "duedate" : "2021-09-12" } },
+{ "_id" : 27463, 
+  "author" : "아라파티",  
+  "title" : "하둡 관리", 
+  "price" : 35000, 
+  "pub_id" : 124522, 
+  "pub_name" : "성안당", 
+  "available" : 0, 
+  "lended" : { "memb_id" : 324522, "memb_name" : "김가천", "issuedate" : "2021-09-05", "duedate" : "2021-09-15" } }
+])
+
+// Library에 "Lending" collection의 document를 추가
+//returndate 필드가 존재하면 대여 후, 반납된 상태,
+//returndate 필드가 존재하지 않으면 대여중인 상태
+db.Lending.drop() 
+db.Lending.insertMany([ 
+  { 
+    "_id" : 27461, 
+    "author" : "크리스티나 초도로", 
+    "title" : "MongoDB 완벽 가이드", 
+    "price" : 36000, 
+    "pub_id" : 124512, 
+    "pub_name" : "한빛미디어", 
+    "available" : 1, 
+    "lended" : { 
+      "memb_id" : 324521, 
+      "memb_name" : "홍길동", 
+      "issuedate" : ISODate("2021-09-03"), 
+      "duedate" : ISODate("2021-09-13"),  
+      "returndate" : ISODate("2021-09-21")
+    } 
+  },
+
+  { 
+    "_id" : 27462, 
+    "author" : "제프리 에이븐", 
+    "title" : "파이썬 활용한 스파크 프로그래밍", 
+    "price" : 30000, 
+    "pub_id" : 124514, 
+    "pub_name" : "에이콘", 
+    "available" : 0, 
+    "lended" : { 
+        "memb_id" : 324523, 
+        "memb_name" : "전지현", 
+      "issuedate" :  ISODate("2021-09-02"), 
+      "duedate" : ISODate("2021-09-12") 
+    }
+  },
+
+  { 
+    "_id" : 27463, 
+    "author" : "아라파티",  
+    "title" : "하둡 관리", 
+    "price" : 35000, 
+    "pub_id" : 124522, 
+    "pub_name" : "성안당", 
+    "available" : 0, 
+    "lended" : { 
+      "memb_id" : 324522, 
+      "memb_name" : "김가천", 
+      "issuedate" :  ISODate("2021-09-05"), 
+      "duedate" : ISODate("2021-09-15") 
+    } 
+  }
+])
+
+// database의 모든 collection을 검색
+show collections
+
+// 데이터 입력 후 정상적으로 입력이 됐는지 확인
+db.Publishers.find().pretty()
+db.Members.find().pretty()
+db.Books.find().pretty()
+db.Lending.find().pretty()
+
+// 2. Books collection에서 대여 불가능한 도서 목록을 조회하여 각 도서 ID 확인
+db.Books.find( { $where : "this.available === 0" } ).pretty()
+
+// 3. Lending collection에서 각 도서의 ID로 조회하여 책 제목과 만기일(duedate)을 확인
+db.Lending.find( {}, {  _id : false, "title" : true, "lended.duedate": true } )
+
+// 4. 연체되지 않는다고 가정하고, 각 도서 만기일(duedate)의 다음 날을 대출가능 일로 정함
+db.Lending.updateMany(
+  { "lended.duedate" : { $exists : true } },
+  [{ $set: { "lended.duedate": { $dateAdd: { startDate: "$lended.duedate", unit: "day", amount: 1 } } } }]
+)
+
+db.Lending.find( {}, {  _id : false, "title" : true, "lended.duedate": true } )
