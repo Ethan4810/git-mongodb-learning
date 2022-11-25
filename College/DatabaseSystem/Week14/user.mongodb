@@ -1,0 +1,46 @@
+/* DATABASE SETUP */
+// Show all databases.
+show dbs
+
+// Select database to use.
+use userdb
+
+// Show currently using database.
+db
+
+// Create a user collectoin.
+db.user.drop()
+db.createCollection("user")
+
+// Show all collectoins.
+db.getCollectionNames()
+show collections 
+
+/* INSERT CLAUSES */
+// Insert data into collection.
+db.user.insert({ 
+  "_id": 10012021,
+  "name": { "first": "Ethan", "last": "Klein" },
+  "age": 28,
+  "language": "english"
+})
+
+// Insert data into collection.
+db.user.insert({ 
+  "_id": 10012022,
+  "name": { "first": "Dan", "last": "Mace" },
+  "age": 32,
+  "language": [ "english", "spanish", "german" ],
+  "follower": [ { "_id" : 324522, "name": { "first": "Casey", "last": "Neistat"}} ]
+})
+
+/* FIND CLAUSES */
+// Serach all from user collectios.
+db.user.find().pretty()
+
+// Find user with first name "Ethan".
+db.user.find({ "name.first" : "Ethan"}).pretty()
+
+// Find user who has a folower named "Casey".
+db.user.find({ "follower.name.first" : "Casey"},  {  _id : false, "name.first" : true }).pretty()
+

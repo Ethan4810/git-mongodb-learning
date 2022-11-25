@@ -29,7 +29,7 @@ db.publishers.insertMany([
   }
 ]);
 
-// Library에 "members" collection의 document를 추가
+// library에 "members" collection의 document를 추가
 db.members.drop();
 db.members.insertMany([
   { "_id" : 324521, 
